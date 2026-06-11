@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
-const PUBLIC_ROUTES = [
-  '/',
-  '/login',
-  '/register',
-]
+const PUBLIC_ROUTES = ['/', '/login', '/register']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Always allow tracking pages and API routes
   if (
     pathname.startsWith('/track/') ||
     pathname.startsWith('/api/location') ||
@@ -21,12 +16,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Allow public routes
-  if (PUBLIC_ROUTES.includes(pathname)) {
-    return NextResponse.next()
-  }
+  if (PUBLIC_ROUTES.includes(pathname)) return NextResponse.next()
 
-  // Protected routes — require auth session
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -35,11 +26,12 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll() { return request.cookies.getAll() },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           response = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            response.cookies.set(name, value, options as any)
           )
         },
       },
