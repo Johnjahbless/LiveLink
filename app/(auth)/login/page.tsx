@@ -1,13 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-export default function LoginPage() {
+// Isolated into its own component so Suspense can wrap useSearchParams
+function LoginForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
+  const searchParams  = useSearchParams()
   const callbackError = searchParams.get('error')
 
   const [email, setEmail]       = useState('')
@@ -35,7 +36,6 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-sm">
-      {/* Card */}
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
         <div className="mb-6">
           <h1 className="text-xl font-bold text-gray-900">Sign in</h1>
@@ -60,7 +60,6 @@ export default function LoginPage() {
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
@@ -96,5 +95,25 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="w-full max-w-sm">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 animate-pulse">
+          <div className="h-6 bg-gray-100 rounded w-1/3 mb-2" />
+          <div className="h-4 bg-gray-100 rounded w-1/2 mb-6" />
+          <div className="space-y-4">
+            <div className="h-12 bg-gray-100 rounded-xl" />
+            <div className="h-12 bg-gray-100 rounded-xl" />
+            <div className="h-12 bg-gray-100 rounded-xl" />
+          </div>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }
