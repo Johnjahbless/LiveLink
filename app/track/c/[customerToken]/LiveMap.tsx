@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import 'leaflet/dist/leaflet.css'
 import type { DeliveryLocation, DeliveryStatus } from '@/types'
 
 interface Props {
@@ -26,7 +27,6 @@ export default function LiveMap({ locations, status }: Props) {
 
     const initMap = async () => {
       const L = (await import('leaflet')).default
-      await import('leaflet/dist/leaflet.css')
 
       // Bail if cleanup already ran (React StrictMode double-invoke)
       if (destroyed || !mapRef.current) return
