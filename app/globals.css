@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ───────────────────────────────────────────────────────── */
+:root {
+  --ink:    #0A0A0A;
+  --green:  #16C064;
+  --gd:     #0F9149;
+  --soft:   #DCFCE7;
+  --white:  #ffffff;
+  --muted:  #6B7280;
+  --border: #E5E7EB;
+  --text:   #111827;
+  --snow:   #F8FAFC;
+}
+
+/* ── Typography ──────────────────────────────────────────────────────────── */
+/* Body font is applied via className on <body> in layout.tsx — no override needed */
+
+/* .syne class used on headings throughout page.tsx (now Plus Jakarta Sans) */
+.syne {
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ── Landing page animations ─────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+@keyframes rider-move {
+  0%   { top: 68%; left: 8%;  }
+  20%  { top: 52%; left: 28%; }
+  45%  { top: 35%; left: 50%; }
+  70%  { top: 26%; left: 72%; }
+  85%  { top: 30%; left: 80%; }
+  100% { top: 68%; left: 8%;  }
+}
+@keyframes ripple-ring {
+  0%   { width: 30px; height: 30px; opacity: 0.8; }
+  100% { width: 72px; height: 72px; opacity: 0; }
+}
+
+/* ── Landing page component classes ─────────────────────────────────────── */
+.logo-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.live-dot {
+  display: inline-block;
+  width: 5px; height: 5px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+.rider-dot {
+  position: absolute;
+  width: 30px; height: 30px;
+  background: var(--green);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  box-shadow: 0 0 18px rgba(22, 192, 100, 0.55);
+  animation: rider-move 8s ease-in-out infinite;
+  z-index: 2;
+}
+.rider-dot::before,
+.rider-dot::after {
+  content: '';
+  position: absolute;
+  border: 2px solid rgba(22, 192, 100, 0.4);
+  border-radius: 50%;
+  animation: ripple-ring 2s ease-out infinite;
+}
+.rider-dot::after { animation-delay: 0.9s; }
+
+.map-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.09;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.demo-glow::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(22,192,100,0.35), transparent);
+}
+
+.steps-line::before {
+  content: '';
+  position: absolute;
+  top: 23px;
+  left: 10%; right: 10%;
+  height: 1px;
+  background: var(--border);
+  z-index: 0;
+}
+
+/* ── Responsive overrides ────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .hero-grid  { grid-template-columns: 1fr !important; }
+  .demo-wrap  { max-width: 440px; margin: 0 auto; }
+  .hide-sm    { display: none !important; }
+  .pain-grid  { grid-template-columns: 1fr !important; }
+  .feat-grid  { grid-template-columns: 1fr !important; }
+  .steps-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+  .steps-line::before { display: none !important; }
+  .price-grid { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 480px) {
+  .price-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Leaflet overrides ───────────────────────────────────────────────────── */
+.leaflet-container {
+  font-family: inherit;
+  z-index: 0;
+}
